@@ -118,6 +118,7 @@ def state_modifier(state):
     state['ego_thinking_statement'] = params['ego_thinking_statement']
     state['memory_active'] = params['memory_active']
     state['qdrant_address'] = params['qdrant_address']
+    state['qdrant_api_key'] = params['qdrant_api_key']
     state['polarity_score'] = params['polarity_score']
     state['current_selected_character'] = params['current_selected_character']
     '''
@@ -212,9 +213,10 @@ def input_modifier(string, state, is_chat=False):
         ltm_limit = params['ltm_limit']
         rag_limit = params['rag_limit']
         address = params['qdrant_address']
-        ltm = LTM(collection, ltm_limit, verbose, address=address)
+        api_key = params['qdrant_api_key']
+        ltm = LTM(collection, ltm_limit, verbose, address=address, api_key=api_key)
         params['user_long_term_memories'] = ltm.recall(string)
-        rag = RagDataMemory(collection,rag_limit,verbose, address=address)
+        rag = RagDataMemory(collection,rag_limit,verbose, address=address, api_key=api_key)
         params['user_rag_data'] = rag.recall(string)
         
         if len(commands_output) > 0:
@@ -274,9 +276,10 @@ def output_modifier(string, state, is_chat=False):
         ltm_limit = params['ltm_limit']
         rag_limit = params['rag_limit']
         address = params['qdrant_address']
-        ltm = LTM(collection, ltm_limit, verbose,  address=address)
+        api_key = params['qdrant_api_key']
+        ltm = LTM(collection, ltm_limit, verbose,  address=address, api_key=api_key)
         params['bot_long_term_memories'] = ltm.recall(string)
-        rag = RagDataMemory(collection,rag_limit,verbose, address=address)
+        rag = RagDataMemory(collection,rag_limit,verbose, address=address, api_key=api_key)
         params['bot_rag_data'] = rag.recall(string)
     if params['dream_mode'] == 0:
         #add the output of commands
@@ -313,7 +316,8 @@ def custom_generate_chat_prompt(user_input, state, **kwargs):
         verbose = params['verbose']
         ltm_limit = params['ltm_limit']
         address = params['qdrant_address']
-        ltm = LTM(collection,ltm_limit,verbose, address=address)
+        api_key = params['qdrant_api_key']
+        ltm = LTM(collection,ltm_limit,verbose, address=address, api_key=api_key)
         dream_check = 0
         #print("Len of not indexed mems:" + str(len(mems_to_review)))
         
@@ -467,7 +471,7 @@ def delete_everything():
         character_name = params['current_selected_character']
         
         databasefile = os.path.join(databasepath, character_name_lowercase + "_sqlite.db")
-        ltm = LTM(character_name, params['ltm_limit'], params['verbose'], address=params['qdrant_address'])
+        ltm = LTM(character_name, params['ltm_limit'], params['verbose'], address=params['qdrant_address'], api_key=params['qdrant_api_key'])
         ltm.delete_vector_db()
         utils.delete_file(databasefile)
         

@@ -22,7 +22,8 @@ class RagDataMemory():
                  verbose=False,
                  embedder='all-mpnet-base-v2',
                  address='localhost',
-                 port=6333
+                 port=6333,
+                 api_key: str = None,
                  ):
 
         self.verbose = verbose
@@ -35,10 +36,10 @@ class RagDataMemory():
         self.port = port
         if self.verbose:
             print(f"addr:{self.address}, port:{self.port}")
-
+        self.api_key = api_key
         self.embedder = embedder
         self. encoder = SentenceTransformer(self.embedder)
-        self.qdrant = QdrantClient(self.address, port=self.port)
+        self.qdrant = QdrantClient(self.address, port=self.port, api_key=self.api_key)
         self.create_vector_db_if_missing()
 
     

@@ -24,6 +24,7 @@ class LTM():
                  verbose=False,
                  embedder='all-mpnet-base-v2',
                  address='localhost',
+                 api_key: str = None,
                  port=6333
                  ):
 
@@ -37,10 +38,10 @@ class LTM():
         self.port = port
         if self.verbose:
             print(f"addr:{self.address}, port:{self.port}")
-
+        self.api_key = api_key
         self.embedder = embedder
-        self. encoder = SentenceTransformer(self.embedder)
-        self.qdrant = QdrantClient(self.address, port=self.port)
+        self.encoder = SentenceTransformer(self.embedder)
+        self.qdrant = QdrantClient(self.address, port=self.port, api_key=self.api_key)
         self.create_vector_db_if_missing()
 
     
